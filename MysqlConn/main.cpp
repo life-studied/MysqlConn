@@ -17,7 +17,8 @@ int query()
 
 int main()
 {
-    query();
+    for(int i = 0;i<100;i++)
+        query();
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
