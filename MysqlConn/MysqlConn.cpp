@@ -56,6 +56,13 @@ bool DBConn::MysqlConn::next()
     return m_row != nullptr;
 }
 
+std::string DBConn::MysqlConn::title(size_t index)
+{
+    auto cn = colNum();
+    auto* fields = mysql_fetch_fields(m_result);
+    return fields[index].name;
+}
+
 std::string DBConn::MysqlConn::value(size_t index)
 {
     if (m_result)
@@ -68,6 +75,15 @@ std::string DBConn::MysqlConn::value(size_t index)
 
     auto strLen = mysql_fetch_lengths(m_result)[index];     // value after \0 may be miss
     return std::string(valStr, strLen);                     // std::string(valStr) is wrong!
+}
+
+size_t DBConn::MysqlConn::colNum()
+{
+    if (m_result)
+    {
+        return mysql_num_fields(m_result);
+    }
+    return 0;
 }
 
 bool DBConn::MysqlConn::transaction()

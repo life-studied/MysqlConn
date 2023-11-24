@@ -2,23 +2,25 @@
 //
 
 #include <iostream>
-#include "MysqlConnPool.h"
+#include "MysqlOP.h"
 
-int query()
-{
-    using namespace DBConn;
-    auto& instance = SinglePool::getInstance();
-    auto conn = instance.getConntion();
-    conn->query("SELECT * FROM activity");
-    while(conn->next())
-        std::cout << conn->value(0) << std::endl;
-    return 1;
-}
 
 int main()
 {
-    for(int i = 0;i<100;i++)
-        query();
+	using namespace DBConn::MysqlOP;
+	auto table = MysqlOP::query("select * from activity");
+	for (const auto& i : table.titles)
+		std::cout << i << '\t';
+	std::cout << std::endl;
+	for (const auto& row : table.content)
+	{
+		for (const auto& i : row)
+			std::cout << i << '\t';
+		std::cout << std::endl;
+	}
+	
+	auto res = MysqlOP::countNumber("select count(*) number from activity");
+	std::cout << res.name << '\n' << res.data << std::endl;
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单

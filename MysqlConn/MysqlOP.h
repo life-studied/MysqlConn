@@ -1,23 +1,37 @@
 #pragma once
-#include "MysqlConn.h"
+#include "MysqlConnPool.h"
 #include <vector>
+#include <string>
 namespace DBConn
 {
+	using std::vector;
+	struct Table
+	{
+		vector<string> titles;
+		vector<vector<string>> content;
+	};
+
+	struct Number
+	{
+		string name;
+		string data;
+	};
+
 	namespace MysqlOP
 	{
-		using std::vector;
 		class MysqlOP
 		{
+		public:
 			// query result is a table
-			static vector<vector<string>> query(string sql);
+			static Table query(string sql);
 
 			// query result is a number
-			template <typename T>
-			static T countNumber(string sql);
+			static Number countNumber(string sql);
 
-		private:
-			static auto& getPoolInstance();
+
 		};
+
+		
 	}
 }
 

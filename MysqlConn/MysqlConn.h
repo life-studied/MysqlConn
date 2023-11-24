@@ -40,7 +40,11 @@ namespace DBConn
 		virtual bool update(string sql) override;
 		virtual bool query(string sql) override;
 		virtual bool next() override;
+
+		string title(size_t index);
 		virtual string value(size_t index) override;
+		size_t colNum();
+
 		virtual bool transaction() override;
 		virtual bool commit() override;
 		virtual bool rollback() override;
