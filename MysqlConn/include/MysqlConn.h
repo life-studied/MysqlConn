@@ -16,11 +16,7 @@ namespace DBConn
 		virtual bool update(string sql) = 0;
 
 		// query DataBase
-		virtual bool query(string sql) = 0;
-
-		// loop the result set
-		virtual bool next() = 0;
-		virtual string value(size_t index) = 0;
+		virtual bool query(string sql, MYSQL_RES*& res) = 0;
 
 		// transaction operation
 		virtual bool transaction() = 0;		//create a transaction
@@ -38,13 +34,8 @@ namespace DBConn
 		bool connect(MysqlConfig::MysqlConfig&& config);
 		bool connect(MysqlConfig::MysqlConfig& config);
 		virtual bool update(string sql) override;
-		virtual bool query(string sql) override;
-		virtual bool next() override;
-
-		string title(size_t index);
-		virtual string value(size_t index) override;
-		size_t colNum();
-
+		virtual bool query(string sql, MYSQL_RES*& res) override;
+		
 		virtual bool transaction() override;
 		virtual bool commit() override;
 		virtual bool rollback() override;
@@ -55,8 +46,6 @@ namespace DBConn
 		void freeRes();
 	private:
 		MYSQL* m_conn = nullptr;
-		MYSQL_RES* m_result = nullptr;
-		MYSQL_ROW m_row = nullptr;
 		steady_clock::time_point m_aliveTime;
 	};
 

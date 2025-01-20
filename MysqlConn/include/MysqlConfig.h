@@ -10,10 +10,10 @@ namespace MysqlConfig
 		string dbName;
 		string ip;
 		unsigned short port;
-		size_t maxSize;		//上限
-		size_t minSize;		//下限
-		size_t timeOut;		//超时
-		size_t maxIdleTime;	//空闲
+		size_t maxSize;		//涓婇檺
+		size_t minSize;		//涓嬮檺
+		size_t timeOut;		//瓒呮椂
+		size_t maxIdleTime;	//绌洪棽
 
 		bool parseJsonFile(string filename = "dbConfig.json");
 	};

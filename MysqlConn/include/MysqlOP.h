@@ -3,15 +3,33 @@
 #include <vector>
 #include <string>
 #include <type_traits>
+#include <iostream>
+#include <string_view>
+
+struct MYSQL_RES;	// forward declaration
 
 namespace DBConn
 {
     using std::vector;
     using std::string;
-	struct Table
-	{
-		vector<string> titles;
-		vector<vector<string>> content;
+
+	struct query_result {
+		query_result() = default;
+		
+		~query_result();
+		
+		// 用于将MYSQL_RES*中的查询结果转为string_view，方便后续操作
+		void fetch();
+
+		void print() const;
+
+		int col_num() const;
+
+		int row_num() const;
+		
+		std::vector<std::string_view> titles;
+		std::vector<std::vector<std::string_view>> content;
+		MYSQL_RES* m_result = nullptr;
 	};
 
 	namespace MysqlOP
@@ -31,7 +49,7 @@ namespace DBConn
 				{
 					if constexpr (std::is_same_v<std::string, T>)
 					{
-						sql.replace(idx, 1, std::string("\"") + data + "\"");
+						sql.replace(idx, 1, data);
 					}
 					else
 					{
@@ -50,12 +68,21 @@ namespace DBConn
 					throw std::invalid_argument("no args need to parse");
 				else
 				{
-					sql.replace(idx, 1, std::string("\"") + data + "\"");
+					sql.replace(idx, 1, data);
 				}
 				return *this;
 			}
 
-			Table execute();
+			template <typename T, typename F>
+			MysqlOP& arg(T&& data, F&& func)
+			{
+				if(!func(std::forward<T>(data)))
+					throw std::invalid_argument("args need to parse");
+
+				return arg(std::forward<T>(data));
+			}
+
+			std::shared_ptr<query_result> execute();
 
 			void print();
 		private:

@@ -1,5 +1,5 @@
 # MysqlConn
-封装Mysql C API为C++ Class
+封装Mysql C API为C++ Class，使用std::string_view减少拷贝。
 
 ## 使用本项目
 
@@ -35,7 +35,9 @@ target_link_directories(HelloWorld PRIVATE ${MysqlConn_LIB_DIRS})
 target_link_libraries(HelloWorld MysqlConn)
 ```
 
-### 配置dbConfig.json文件
+### 配置`MysqlConn/MysqlConn/dbConfig.json`文件
+
+该文件在编译时会自动被复制到dll同级目录。
 
 ```json
 {
@@ -51,30 +53,28 @@ target_link_libraries(HelloWorld MysqlConn)
 }
 ```
 
-### OP类
+### 使用
 
 ```C++
 #include "MysqlOP.h"
 #include <iostream>
-
 int main(int argc, char *argv[])
 {
     using namespace DBConn::MysqlOP;
-    std::cout << "Hello, World!" << std::endl;
-	auto table = MysqlOP::query("select * from activity").execute();
-    for(auto& title : table.titles)
-    {
-        std::cout << title << " ";
-    }
-    std::cout << std::endl;
-    for(auto& row : table.content)
-    {
-        for(auto& cell : row)
-        {
-            std::cout << cell << " ";
-        }
-        std::cout << std::endl;
-    }
+    system("chcp 65001");
+    
+    int user_id = 0;
+    std::cin >> user_id;
+
+	auto sql = MysqlOP::query("select * from users where name='?' and user_id=?")
+        .arg(u8"张伟")
+        .arg(user_id, [](auto id) { return id > 0;});
+    
+    sql.print();
+
+    auto table = sql.execute();
+    table->print();
+
     return 0;
 }
 ```

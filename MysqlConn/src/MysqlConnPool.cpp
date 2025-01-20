@@ -1,6 +1,10 @@
-#include "MysqlConnPool.h"
 #include <thread>
 #include <exception>
+
+#include "MysqlConn.h"
+#include "MysqlConnPool.h"
+
+
 DBConn::MysqlConnPool::MysqlConnPool()
 {
 	if (!config.parseJsonFile())
@@ -84,7 +88,7 @@ void DBConn::MysqlConnPool::addConn()
 		}
 	);
 	if (!conn->connect(config))
-		throw std::invalid_argument{u8"Á¬½ÓÊ§°Ü£¬Çë¼ì²é²ÎÊýÉèÖÃÊÇ·ñÕýÈ·"};
+		throw std::invalid_argument{u8"è¿žæŽ¥å¤±è´¥ï¼Œè¯·æ£€æŸ¥å‚æ•°è®¾ç½®æ˜¯å¦æ­£ç¡®"};
 	conn->refreshAliveTime();
 	pool.push(conn);
 }

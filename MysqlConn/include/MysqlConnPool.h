@@ -3,8 +3,11 @@
 #include <memory>
 #include <mutex>
 #include <condition_variable>
-#include "MysqlConn.h"
+
 #include "Singleton.hpp"
+#include "MysqlConfig.h"
+#include "MysqlConn.h"
+
 namespace DBConn
 {
 	using std::queue;
@@ -20,9 +23,10 @@ namespace DBConn
 	private:
 		void addConn();
 	private:
+		// 配置信息
 		MysqlConfig::MysqlConfig config;
 		
-
+		// 连接池
 		queue<shared_ptr<MysqlConn>> pool;
 		bool isOver = false;
 		mutex mtx;
